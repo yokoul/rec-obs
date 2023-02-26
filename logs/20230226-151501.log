@@ -1,0 +1,58 @@
+2023-02-26 15:15:01 INFO: Connecting...
+2023-02-26 15:15:01 INFO: Connected!
+2023-02-26 15:15:01 INFO: Connected to OBS 1 (host.docker.internal:4444)
+2023-02-26 15:15:01 INFO: Connecting...
+2023-02-26 15:15:01 INFO: Connected!
+2023-02-26 15:15:01 INFO: Connected to OBS 2 (host.docker.internal:4445)
+2023-02-26 15:15:01 INFO: Connecting...
+2023-02-26 15:15:01 INFO: Connected!
+2023-02-26 15:15:01 INFO: Connected to OBS 3 (host.docker.internal:4446)
+2023-02-26 15:15:01 INFO: Connecting...
+2023-02-26 15:15:01 INFO: Connected!
+2023-02-26 15:15:01 INFO: Connected to OBS 4 (host.docker.internal:4447)
+2023-02-26 15:15:01 INFO: Setting presenter file name
+2023-02-26 15:15:01 DEBUG: Sending message id 3: {'filename-formatting': 'recording-1677424500-3b545b7a-6840-431a-8dae-692b97021baa-presenter', 'request-type': 'SetFilenameFormatting', 'message-id': '3'}
+2023-02-26 15:15:01 DEBUG: Got answer for id 3: {'message-id': '3', 'status': 'ok'}
+2023-02-26 15:15:01 INFO: Setting recording path
+2023-02-26 15:15:01 DEBUG: Sending message id 4: {'rec-folder': 'C:\\rec-obs\\recordings\\recording-1677424500-3b545b7a-6840-431a-8dae-692b97021baa', 'request-type': 'SetRecordingFolder', 'message-id': '4'}
+2023-02-26 15:15:01 DEBUG: Got answer for id 4: {'message-id': '4', 'status': 'ok'}
+2023-02-26 15:15:01 INFO: Setting presentation file name
+2023-02-26 15:15:01 DEBUG: Sending message id 3: {'filename-formatting': 'recording-1677424500-3b545b7a-6840-431a-8dae-692b97021baa-presentation', 'request-type': 'SetFilenameFormatting', 'message-id': '3'}
+2023-02-26 15:15:01 DEBUG: Got answer for id 3: {'message-id': '3', 'status': 'ok'}
+2023-02-26 15:15:01 INFO: Setting recording path
+2023-02-26 15:15:01 DEBUG: Sending message id 4: {'rec-folder': 'C:\\rec-obs\\recordings\\recording-1677424500-3b545b7a-6840-431a-8dae-692b97021baa', 'request-type': 'SetRecordingFolder', 'message-id': '4'}
+2023-02-26 15:15:01 DEBUG: Got answer for id 4: {'message-id': '4', 'status': 'ok'}
+2023-02-26 15:15:01 INFO: Switching to scene 'Landing'
+2023-02-26 15:15:01 INFO: Switching to scene 'Landing'
+2023-02-26 15:15:01 INFO: Switching to scene 'Landing'
+2023-02-26 15:15:01 INFO: Switching to scene 'Landing'
+2023-02-26 15:15:01 DEBUG: Sending message id 3: {'scene-name': 'Landing', 'request-type': 'SetCurrentScene', 'message-id': '3'}
+2023-02-26 15:15:01 DEBUG: Sending message id 5: {'scene-name': 'Landing', 'request-type': 'SetCurrentScene', 'message-id': '5'}
+2023-02-26 15:15:01 DEBUG: Sending message id 3: {'scene-name': 'Landing', 'request-type': 'SetCurrentScene', 'message-id': '3'}
+2023-02-26 15:15:01 DEBUG: Sending message id 5: {'scene-name': 'Landing', 'request-type': 'SetCurrentScene', 'message-id': '5'}
+2023-02-26 15:15:01 DEBUG: Got answer for id 5: {'message-id': '5', 'status': 'ok'}
+2023-02-26 15:15:01 DEBUG: Got answer for id 5: {'message-id': '5', 'status': 'ok'}
+2023-02-26 15:15:01 DEBUG: Got answer for id 3: {'message-id': '3', 'status': 'ok'}
+2023-02-26 15:15:01 DEBUG: Got answer for id 3: {'message-id': '3', 'status': 'ok'}
+2023-02-26 15:15:01 INFO: Starting recording
+2023-02-26 15:15:01 DEBUG: Sending message id 4: {'request-type': 'StartRecording', 'message-id': '4'}
+2023-02-26 15:15:01 INFO: Starting recording
+2023-02-26 15:15:01 DEBUG: Sending message id 6: {'request-type': 'StartRecording', 'message-id': '6'}
+2023-02-26 15:15:01 INFO: Starting recording
+2023-02-26 15:15:01 DEBUG: Got answer for id 4: {'message-id': '4', 'status': 'ok'}
+2023-02-26 15:15:01 INFO: Starting recording
+2023-02-26 15:15:01 DEBUG: Sending message id 4: {'request-type': 'StartRecording', 'message-id': '4'}
+2023-02-26 15:15:01 DEBUG: Got answer for id 6: {'message-id': '6', 'status': 'ok'}
+2023-02-26 15:15:01 DEBUG: Sending message id 6: {'request-type': 'StartRecording', 'message-id': '6'}
+2023-02-26 15:15:01 DEBUG: Got message: {'rec-timecode': '00:00:00.000', 'update-type': 'RecordingStarting'}
+2023-02-26 15:15:01 DEBUG: Got answer for id 4: {'message-id': '4', 'status': 'ok'}
+2023-02-26 15:15:01 DEBUG: Got message: {'rec-timecode': '00:00:00.000', 'update-type': 'RecordingStarting'}
+2023-02-26 15:15:01 DEBUG: Got answer for id 6: {'message-id': '6', 'status': 'ok'}
+2023-02-26 15:15:01 DEBUG: Got message: {'rec-timecode': '00:00:00.000', 'update-type': 'RecordingStarting'}
+2023-02-26 15:15:01 DEBUG: Got message: {'rec-timecode': '00:00:00.000', 'update-type': 'RecordingStarting'}
+2023-02-26 15:15:01 DEBUG: Got message: {'recordingFilename': 'C:/rec-obs/recordings/recording-1677424500-3b545b7a-6840-431a-8dae-692b97021baa/recording-1677424500-3b545b7a-6840-431a-8dae-692b97021baa-presentation.mp4', 'update-type': 'RecordingStarted'}
+2023-02-26 15:15:01 DEBUG: Got message: {'recordingFilename': 'C:/rec-obs/recordings/recording-1677424500-3b545b7a-6840-431a-8dae-692b97021baa/recording-1677424500-3b545b7a-6840-431a-8dae-692b97021baa-presenter.mp4', 'update-type': 'RecordingStarted'}
+2023-02-26 15:15:01 INFO: Waiting for 2 seconds
+2023-02-26 15:15:01 INFO: Waiting for 2 seconds
+2023-02-26 15:15:02 INFO: Waiting for 2 seconds
+2023-02-26 15:15:02 INFO: Waiting for 2 seconds
