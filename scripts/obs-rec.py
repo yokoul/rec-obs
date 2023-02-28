@@ -86,55 +86,29 @@ def wait_for_duration(ws, index):
     logging.info(f"Waiting for recording duration ({duration} seconds)")
     time.sleep(duration)
 
-def wait_for_extended_time():
+def wait_for_extended_time(ws, index):
     config = read_config()
     extended_time = config["recording"]["extended_time"]
     logging.info(f"Waiting for extended time ({extended_time} seconds)")
     time.sleep(extended_time)
 
 def perform_actions_on_obs(ws, actions, sequence, index):
-    i = 0
-    while i < len(actions):
-        action = actions[i]
+    action_functions = {
+        "sceneLanding": switch_to_landing_scene,
+        "sceneLive": switch_to_live_scene,
+        "startRec": start_recording,
+        "stopRec": stop_recording,
+        "wait2s": lambda ws, index: time.sleep(2),
+        "wait5s": lambda ws, index: time.sleep(5),
+        "waitDuration": wait_for_duration,
+        "waitExtend": wait_for_extended_time,
+    }
+
+    for action in actions:
         if action not in sequence:
             logging.warning(f"Action '{action}' is not a possible action. Skipping.")
-            i += 1
             continue
-        if action == "sceneLanding":
-            scene = sceneLanding[index]
-            logging.info(f"Switching to scene '{scene}'")
-            ws.call(requests.SetCurrentScene(scene))
-        elif action == "sceneLive":
-            scene = sceneLive[index]
-            logging.info(f"Switching to scene '{scene}'")
-            ws.call(requests.SetCurrentScene(scene))
-        elif action == "startRec":
-            if should_record[index]:
-                logging.info("Starting recording")
-                ws.call(requests.StartRecording())
-            else:
-                logging.info("Recording disabled")
-        elif action == "stopRec":
-            if should_record[index]:
-                logging.info("Stopping recording")
-                ws.call(requests.StopRecording())
-            else:
-                logging.info("Recording disabled")
-        elif action == "wait2s":
-            logging.info("Waiting for 2 seconds")
-            time.sleep(2)
-        elif action == "wait5s":
-            logging.info("Waiting for 5 seconds")
-            time.sleep(5)
-        elif action == "waitDuration":
-            logging.info(f"Waiting for recording duration ({duration} seconds)")
-            time.sleep(duration)
-        elif action == "waitExtend":
-            config = read_config()
-            extended_time = config["recording"]["extended_time"]
-            logging.info(f"Waiting for extended time ({extended_time} seconds)")
-            time.sleep(extended_time)
-        i += 1
+        action_functions[action](ws, index)
 
 # Connect to OBS instances
 wss = []
@@ -155,10 +129,12 @@ with ThreadPoolExecutor(max_workers=len(addresses)) as executor:
         actions = sequence[:]
         future = executor.submit(perform_actions_on_obs, ws, actions, sequence, i)
         futures.append(future)
+        #time.sleep(0.5)
 
     # Wait for all futures to complete
     for future in futures:
         future.result()
+        #time.sleep(0.5)
 
 # Disconnect from OBS instances
 for ws in wss:
