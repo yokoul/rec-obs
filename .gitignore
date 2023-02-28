@@ -1,3 +1,3 @@
-logs/*.log
-recordings/*.mp4
-__pycache__/*
+/logs/*.log
+/recordings/*.mp4
+/__pycache__/.*

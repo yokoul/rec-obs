@@ -92,27 +92,30 @@ def wait_for_extended_time():
     logging.info(f"Waiting for extended time ({extended_time} seconds)")
     time.sleep(extended_time)
 
-def perform_actions_on_obs(ws, actions, sequence):
-    for action in actions:
+def perform_actions_on_obs(ws, actions, sequence, index):
+    i = 0
+    while i < len(actions):
+        action = actions[i]
         if action not in sequence:
             logging.warning(f"Action '{action}' is not a possible action. Skipping.")
+            i += 1
             continue
         if action == "sceneLanding":
-            scene = sceneLanding[i]
+            scene = sceneLanding[index]
             logging.info(f"Switching to scene '{scene}'")
             ws.call(requests.SetCurrentScene(scene))
         elif action == "sceneLive":
-            scene = sceneLive[i]
+            scene = sceneLive[index]
             logging.info(f"Switching to scene '{scene}'")
             ws.call(requests.SetCurrentScene(scene))
         elif action == "startRec":
-            if should_record[i]:
+            if should_record[index]:
                 logging.info("Starting recording")
                 ws.call(requests.StartRecording())
             else:
                 logging.info("Recording disabled")
         elif action == "stopRec":
-            if should_record[i]:
+            if should_record[index]:
                 logging.info("Stopping recording")
                 ws.call(requests.StopRecording())
             else:
@@ -131,6 +134,7 @@ def perform_actions_on_obs(ws, actions, sequence):
             extended_time = config["recording"]["extended_time"]
             logging.info(f"Waiting for extended time ({extended_time} seconds)")
             time.sleep(extended_time)
+        i += 1
 
 # Connect to OBS instances
 wss = []
@@ -149,7 +153,7 @@ with ThreadPoolExecutor(max_workers=len(addresses)) as executor:
     futures = []
     for i, ws in enumerate(wss):
         actions = sequence[:]
-        future = executor.submit(perform_actions_on_obs, ws, actions, sequence)
+        future = executor.submit(perform_actions_on_obs, ws, actions, sequence, i)
         futures.append(future)
 
     # Wait for all futures to complete
