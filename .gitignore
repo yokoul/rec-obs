@@ -2,3 +2,6 @@ logs/*.log
 recordings/*.mp4
 __pycache__/.*
 init/pyca.conf
+scripts/test-db.py
+scripts/imp-db.py
+scripts/*.db
