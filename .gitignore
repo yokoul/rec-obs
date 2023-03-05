@@ -1,3 +1,4 @@
 /logs/*.log
 /recordings/*.mp4
 /__pycache__/.*
+/init/pyca.conf
