@@ -11,6 +11,7 @@ except ImportError:
     import subprocess
     subprocess.check_call(["pip", "install", 'obs-websocket-py==0.5.3'])
 
+
 # Define log levels
 log_levels = {
     "CRITICAL": logging.CRITICAL,
