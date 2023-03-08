@@ -1,5 +1,5 @@
 logs/*.log
-recordings/*.mp4
+recordings/*
 scripts/__pycache__/
 init/pyca.conf
 scripts/test-db.py

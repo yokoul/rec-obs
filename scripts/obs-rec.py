@@ -6,6 +6,7 @@ import sys
 import time
 import toml
 import logging
+import threading
 from obswebsocket import obsws, requests
 from concurrent.futures import ThreadPoolExecutor
 
@@ -22,9 +23,11 @@ config = read_config()
 utils.setup_logging(config)
 
 # Set variables
-duration = int(sys.argv[1])
-pathName = sys.argv[2]
-fileName = sys.argv[3]
+try:
+    pathName = sys.argv[2]
+    fileName = sys.argv[3]
+except:
+    sys.exit(1)
 actualtime = time.strftime("%H:%M:%S", time.localtime())
 shortfileName = fileName[21:]
 
@@ -96,16 +99,53 @@ def stop_live(ws, index):
     if should_stream[index]:
         logging.info("Stopping live streaming")
         ws.call(requests.StopStreaming())
+class WaitThread(threading.Thread):
+    def __init__(self, duration, log_interval):
+        super().__init__()
+        self.duration = duration
+        self.log_interval = log_interval
+        self.stopped = False
+    
+    def run(self):
+        logging.info(f"Waiting for recording duration ({self.duration} seconds)")
+        start_time = time.monotonic()
+        last_log_time = start_time
+        remaining_time = self.duration
+        while remaining_time > 0 and not self.stopped:
+            time.sleep(1)
+            elapsed_time = time.monotonic() - start_time
+            remaining_time = self.duration - elapsed_time
+            current_time = time.monotonic()
+        if current_time - last_log_time >= self.log_interval:
+            remaining_time = self.duration - elapsed_time
+            logging.info(f"Remaining time: {remaining_time:.0f} seconds")
+            last_log_time = current_time
+        if not self.stopped:
+            logging.info("Recording duration complete")
+    
+    def stop(self):
+        self.stopped = True
+    
+    def update_duration(self, duration):
+        self.duration = duration
 
 def wait_for_duration(ws, index):
-    logging.info(f"Waiting for recording duration ({duration} seconds)")
-    time.sleep(duration)
-
-def wait_for_extended_time(ws, index):
     config = read_config()
-    extended_time = config["recording"]["extended_time"]
-    logging.info(f"Waiting for extended time ({extended_time} seconds)")
-    time.sleep(extended_time)
+    duration = int(sys.argv[1]) + config["recording"]["extended_time"]
+    log_interval = 5
+    thread = WaitThread(duration, log_interval)
+    thread.start()
+    while thread.is_alive():
+        time.sleep(0.5)
+        config = read_config()
+        if "extended_time" in config["recording"]:
+            duration = int(sys.argv[1]) + config["recording"]["extended_time"]
+            thread.update_duration(duration)
+        elapsed_time = time.monotonic() - start_time
+        remaining_time = duration - elapsed_time
+        logging.info(f"Remaining time: {remaining_time:.0f} seconds")
+    thread.stop()
+    thread.join()
 
 def perform_actions_on_obs(ws, actions, sequence, index):
     action_functions = {
@@ -118,7 +158,6 @@ def perform_actions_on_obs(ws, actions, sequence, index):
         "wait5s": lambda ws, index: time.sleep(5),
         "wait10s": lambda ws, index: time.sleep(10),
         "waitDuration": wait_for_duration,
-        "waitExtend": wait_for_extended_time,
     }
 
     for action in actions:
@@ -131,7 +170,11 @@ def perform_actions_on_obs(ws, actions, sequence, index):
 wss = []
 for i, (address, port, password) in enumerate(zip(addresses, ports, passwords)):
     ws = obsws(address, port, password)
-    ws.connect()
+    try:
+        ws.connect()
+    except:
+        logging.error(f"Failed to connect to OBS {i+1} ({address}:{port})")
+        continue
     wss.append(ws)
     logging.info(f"Connected to OBS {i+1} ({address}:{port})")
     
@@ -159,5 +202,5 @@ for ws in wss:
 
 # Reset extended time
 config["recording"]["extended_time"] = 0
-with open("obs-rec.conf", "w") as f:
+with open(config_file, "w") as f:
     toml.dump(config, f)
