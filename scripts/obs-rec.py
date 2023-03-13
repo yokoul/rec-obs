@@ -44,14 +44,18 @@ should_editpresenterstreamname = config["recording"]["should_editpresenterstream
 should_editpresentationstreamname = config["recording"]["should_editpresentationstreamname"]
 sequence = config["recording"]["sequence"]
 
-# Access hosts and scenes
+# Access hosts
 hosts = config["hosts"]
 addresses = hosts["address"]
 ports = hosts["port"]
 passwords = hosts["password"]
+
+# Access scenes
 scenes = hosts["scenes"]
-sceneLanding = scenes["sceneLanding"]
-sceneLive = scenes["sceneLive"]
+Landing = scenes["Landing"]
+Live = scenes["Live"]
+Disclaimer = scenes["Disclaimer"]
+Extro = scenes["Extro"]
 
 # Define functions for different actions
 def set_rec(ws, recording_path, fileName, index):
@@ -74,13 +78,23 @@ def set_stream(ws, stream_server, shortfileName, index):
         logging.info("Setting stream file name")
         ws.call(requests.SetStreamSettings(type="rtmp_custom", settings={"server": f"{stream_server}/{shortfileName}-presentation-delivery"}, save=True))
 
-def switch_to_landing_scene(ws, index):
-    scene = sceneLanding[index]
+def switch_to_landing(ws, index):
+    scene = Landing[index]
     logging.info(f"Switching to scene '{scene}'")
     ws.call(requests.SetCurrentScene(scene))
 
-def switch_to_live_scene(ws, index):
-    scene = sceneLive[index]
+def switch_to_live(ws, index):
+    scene = Live[index]
+    logging.info(f"Switching to scene '{scene}'")
+    ws.call(requests.SetCurrentScene(scene))
+
+def switch_to_disclaimer(ws, index):
+    scene = Disclaimer[index]
+    logging.info(f"Switching to scene '{scene}'")
+    ws.call(requests.SetCurrentScene(scene))
+
+def switch_to_extro(ws, index):
+    scene = Extro[index]
     logging.info(f"Switching to scene '{scene}'")
     ws.call(requests.SetCurrentScene(scene))
 
@@ -105,21 +119,20 @@ class WaitThread(threading.Thread):
         self.duration = duration
         self.log_interval = log_interval
         self.stopped = False
+        self.last_log_time = time.monotonic()
     
     def run(self):
         logging.info(f"Waiting for recording duration ({self.duration} seconds)")
         start_time = time.monotonic()
-        last_log_time = start_time
         remaining_time = self.duration
         while remaining_time > 0 and not self.stopped:
             time.sleep(1)
             elapsed_time = time.monotonic() - start_time
             remaining_time = self.duration - elapsed_time
             current_time = time.monotonic()
-        if current_time - last_log_time >= self.log_interval:
-            remaining_time = self.duration - elapsed_time
-            logging.info(f"Remaining time: {remaining_time:.0f} seconds")
-            last_log_time = current_time
+            if current_time - self.last_log_time >= self.log_interval:
+                logging.info(f"Remaining time: {remaining_time:.0f} seconds")
+                self.last_log_time = current_time
         if not self.stopped:
             logging.info("Recording duration complete")
     
@@ -132,7 +145,8 @@ class WaitThread(threading.Thread):
 def wait_for_duration(ws, index):
     config = read_config()
     duration = int(sys.argv[1]) + config["recording"]["extended_time"]
-    log_interval = 5
+    log_interval = 5  # interval of time to display the remaining time
+    start_time = time.monotonic()
     thread = WaitThread(duration, log_interval)
     thread.start()
     while thread.is_alive():
@@ -143,14 +157,19 @@ def wait_for_duration(ws, index):
             thread.update_duration(duration)
         elapsed_time = time.monotonic() - start_time
         remaining_time = duration - elapsed_time
-        logging.info(f"Remaining time: {remaining_time:.0f} seconds")
+        if remaining_time <= 0:
+            break
+        if remaining_time % log_interval == 0:
+            logging.info(f"Remaining time: {remaining_time:.0f} seconds")
     thread.stop()
     thread.join()
 
 def perform_actions_on_obs(ws, actions, sequence, index):
     action_functions = {
-        "sceneLanding": switch_to_landing_scene,
-        "sceneLive": switch_to_live_scene,
+        "Landing": switch_to_landing,
+        "Live": switch_to_live,
+        "Disclaimer": switch_to_disclaimer,
+        "Extro": switch_to_extro,
         "startLive": start_live,
         "stopLive": stop_live,
         "wait1s": lambda ws, index: time.sleep(1),
