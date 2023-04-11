@@ -56,6 +56,7 @@ Landing = scenes["Landing"]
 Live = scenes["Live"]
 Disclaimer = scenes["Disclaimer"]
 Extro = scenes["Extro"]
+Test = scenes["Test"]
 
 # Define functions for different actions
 def set_rec(ws, recording_path, fileName, index):
@@ -95,6 +96,11 @@ def switch_to_disclaimer(ws, index):
 
 def switch_to_extro(ws, index):
     scene = Extro[index]
+    logging.info(f"Switching to scene '{scene}'")
+    ws.call(requests.SetCurrentScene(scene))
+
+def switch_to_test(ws, index):
+    scene = Test[index]
     logging.info(f"Switching to scene '{scene}'")
     ws.call(requests.SetCurrentScene(scene))
 
@@ -170,6 +176,7 @@ def perform_actions_on_obs(ws, actions, sequence, index):
         "Live": switch_to_live,
         "Disclaimer": switch_to_disclaimer,
         "Extro": switch_to_extro,
+        "Test": switch_to_test,
         "startLive": start_live,
         "stopLive": stop_live,
         "wait1s": lambda ws, index: time.sleep(1),
