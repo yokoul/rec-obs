@@ -5,3 +5,4 @@ init/pyca.conf
 scripts/test-db.py
 scripts/imp-db.py
 scripts/*.db
+img/*.*
